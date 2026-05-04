@@ -1,0 +1,13 @@
+{
+
+	"id": "ArsGoetia",
+	"name": "Ars Goetia",
+	"author": [ "Khasm" ],
+	"badge_colour": "8D2FD6",
+	"description": "Care to deal with the devil?",
+	"prefix": "arsGoetia",
+	"display_name": "Ars Goetia",
+	"main_file": "arsGoetia.lua",
+	"version": "6.6.6"
+
+}
