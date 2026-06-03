@@ -28,11 +28,12 @@ SMODS.Joker {
     eternal_compat = true,
 	calculate = function(self, card, context)
 		--when selecting a blind,
-		if context.setting_blind then
+		if context.setting_blind
+		and not (context.blueprint_card or self).getting_sliced then
 			G.E_MANAGER:add_event(Event({
 				func = function() 
 					for i = 1, card.ability.extra.jokersAmount do
-						local newJoker = create_card('arsGoetia_illusionJokers', G.jokers, nil, 0, nil, nil, nil, 'baal')
+						local newJoker = create_card('arsGoetia_illusionJokers', G.jokers, nil, nil, nil, nil, nil, 'baal')
 						newJoker:add_to_deck()
 						
 						newJoker:set_edition({negative = true}, true)
@@ -44,8 +45,7 @@ SMODS.Joker {
 					return true
             end}))   
 			
-            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_joker'), colour = G.C.BLUE}) 
-            return true
+            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_joker'), colour = G.C.DARK_EDITION}) 
 		end
 	end
 }
@@ -472,7 +472,7 @@ SMODS.Joker {
 	atlas = 'arsGoetiaPacts',
 	pos = { x = 7, y = 0 },
 	cost = 8,
-    blueprint_compat = true,
+    blueprint_compat = false,
     perishable_compat = true,
     eternal_compat = true,
 	enhancement_gate = 'm_stone',
@@ -544,6 +544,7 @@ SMODS.Joker {
     blueprint_compat = true,
     perishable_compat = true,
     eternal_compat = true,
+	no_mod_badges = true,
 	calculate = function(self, card, context)
 		if context.joker_main then
 			--if not revealed, reveal
@@ -568,7 +569,9 @@ SMODS.Joker {
 				delay(0.7)
 				
 				--set position & call to update sprite
-				G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0,func = function() self.rarity = 3;card:set_sprites(card.config.center);return true end }))
+				G.E_MANAGER:add_event(Event({trigger = 'after',
+				                             delay = 0,
+											func = function() self.rarity = 3;self.no_mod_badges = false;card:set_sprites(card.config.center);return true end }))
 				
 				--update name & description variables
 				card.ability.extra.name = card.ability.extra.name2
@@ -598,6 +601,9 @@ function Card:hover()
 		if self.ability.name == "j_arsGoetia_paimon" then
 			if self.ability.extra.revealed == false then
 				self.config.center.rarity = 1
+				self.no_mod_badges = true
+			else
+				self.no_mod_badges = false
 			end
 		end
 	end
@@ -606,8 +612,9 @@ function Card:hover()
 	
 	if self.ability ~= nil then
 		if self.ability.name == "j_arsGoetia_paimon" then
-			if self.ability.extra.revealed == false then
+			if self.ability.extra.revealed == true then
 				self.config.center.rarity = 3
+				self.no_mod_badges = false
 			end
 		end
 	end
@@ -808,8 +815,7 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		--when checking individual played cards,
 		if context.individual
-		and context.cardarea == G.play
-		and not context.blueprint then
+		and context.cardarea == G.play then
 			if context.other_card:get_id() == 6
 			or context.other_card:get_id() == 9
 			then
@@ -1192,7 +1198,7 @@ SMODS.Joker {
 			"when {C:attention}Blind{} is selected"
 		}
 	},
-	config = { extra = { xmult = 10, HandsDiscards = 1 } },
+	config = { extra = { xmult = 6, HandsDiscards = 1 } },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.xmult, card.ability.extra.HandsDiscards } }
 	end,
@@ -1265,8 +1271,6 @@ SMODS.Joker {
 				delay(0.2)
 			end
 		end
-		
-		return returnFlag
 	end
 }
 
@@ -1574,7 +1578,7 @@ SMODS.Joker {
 	atlas = 'arsGoetiaPacts',
 	pos = { x = 6, y = 2 },
 	cost = 3,
-    blueprint_compat = true,
+    blueprint_compat = false,
     perishable_compat = true,
     eternal_compat = true,
 	calculate = function(self, card, context)
@@ -1824,7 +1828,8 @@ SMODS.Joker {
     eternal_compat = true,
 	calculate = function(self, card, context)
 		--when selecting a blind,
-		if context.setting_blind then
+		if context.setting_blind
+		and not (context.blueprint_card or self).getting_sliced then
 			G.E_MANAGER:add_event(Event({
 				func = function() 
 					for i = 1, card.ability.extra.tarotsAmount do
@@ -1840,7 +1845,6 @@ SMODS.Joker {
             end}))   
 			
             card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.SECONDARY_SET.Tarot}) 
-            return true
 		end
 	end
 }
@@ -3079,7 +3083,9 @@ SMODS.Joker {
     eternal_compat = true,
 	calculate = function(self, card, context)
 		--decrease hands and discards at the start of the blind (but not via blueprint)
-		if context.setting_blind and not context.blueprint then
+		if context.setting_blind
+		and not context.blueprint
+		and not (context.blueprint_card or self).getting_sliced then
 			return {
 				ease_hands_played(1, nil, true),
 			}
