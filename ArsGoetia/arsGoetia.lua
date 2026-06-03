@@ -5,7 +5,6 @@ local arsGoetia_name = SMODS.current_mod.name
 
 assert(SMODS.load_file("src/jokers.lua"))()
 assert(SMODS.load_file("src/misc.lua"))()
-SMODS.load_file("config.lua")()
 
 
 -- ## JOKER ATLAS ##

@@ -285,13 +285,13 @@ SMODS.Back({
         name = 'Wrath Deck',
         text = {
             "{C:attention}+#1#{} Joker slot,",
-			"Destroy the {C:attention}#2#{} leftmost",
-			"{V:1}non-Eternal{} Jokers after",
+			"Destroy the {C:attention}leftmost{}",
+			"{V:1}non-Eternal{} Joker after",
 			"clearing a {C:attention}Boss Blind{}",
 			"starting in {C:attention}Ante 3{}"
         }
     },
-	config = { joker_slot = 1, extra = { destroyLeftJokers = 2 } },
+	config = { joker_slot = 1, extra = { destroyLeftJokers = 1 } }, --this was originally 2 lmao
 	loc_vars = function(self)
         return { vars = { self.config.joker_slot,
 		                  self.config.extra.destroyLeftJokers,

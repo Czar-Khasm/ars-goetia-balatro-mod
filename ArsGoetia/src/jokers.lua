@@ -428,8 +428,8 @@ SMODS.Joker {
 				else
 					local suitIsThereAlready = false
 					
-					for i = 1, #suitsScored do
-						if context.scoring_hand[i].base.suit == suitsScored[i] then
+					for j = 1, #suitsScored do
+						if context.scoring_hand[i].base.suit == suitsScored[j] then
 							suitIsThereAlready = true
 						end
 					end
@@ -437,7 +437,7 @@ SMODS.Joker {
 					if not suitIsThereAlready
 					and context.scoring_hand[i].ability.name ~= G.P_CENTERS.m_stone.name
 					then
-						suitsScored[#suitsScored + 1] = context.scoring_hand[i]
+						suitsScored[#suitsScored + 1] = context.scoring_hand[i].base.suit
 					end
 				end
 			end
@@ -644,7 +644,7 @@ SMODS.Joker {
 			"{C:inactive}(Currently{} {C:chips}+#1#{} {C:inactive}Chips){}"
 		}
 	},
-	config = { extra = { chips = 0, chipsScaling = 3, preRerollCost = 0 } },
+	config = { extra = { chips = 0, chipsScaling = 4, preRerollCost = 0 } },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.chips, card.ability.extra.chipsScaling } }
 	end,
@@ -923,39 +923,6 @@ SMODS.Joker {
 		end
 	end
 }
-
-local igo = Game.init_game_object
-function Game:init_game_object()
-	local ret = igo(self)
-	ret.current_round.leraje_suit = { suit1 = 'Spades', suit2 = 'Hearts' }
-	return ret
-end
-
--- This is a part 2 of the above thing, to make the custom G.GAME variable change every round.
-function SMODS.current_mod.reset_game_globals(run_start)
-	-- The suit changes every round, so we use reset_game_globals to choose a suit.
-	G.GAME.current_round.leraje_suit = { suit1 = 'Spades', suit2 = 'Hearts' }
-	
-	G.GAME.current_round.leraje_suit.suit1 = GetLerajeSuit(nil)
-	G.GAME.current_round.leraje_suit.suit2 = GetLerajeSuit(G.GAME.current_round.leraje_suit.suit1)
-end
-
-function GetLerajeSuit(otherSuit)
-	local valid_suit_cards = {}
-	for _, v in ipairs(G.playing_cards) do
-		--check if not stone card and if not previous suit
-		if not SMODS.has_no_suit(v)
-		and v.base.suit ~= otherSuit
-		then
-			valid_suit_cards[#valid_suit_cards + 1] = v
-		end
-	end
-	if valid_suit_cards[1] then
-		local rand_card = pseudorandom_element(valid_suit_cards, pseudoseed('leraje' .. G.GAME.round_resets.ante))
-		return rand_card.base.suit
-	end
-end
-
 
 -- 15 Eligos
 SMODS.Joker {
@@ -1509,13 +1476,6 @@ SMODS.Joker {
 	end
 }
 
-local igo = Game.init_game_object
-function Game:init_game_object()
-	local ret = igo(self)
-	ret.current_round.naberius_suit = { suit = "Spades" }
-	return ret
-end
-
 -- 25 Glasya-Labolas
 SMODS.Joker {
 	key = 'glasya_labolas',
@@ -1812,6 +1772,7 @@ SMODS.Joker {
 	rarity = 1,
 	atlas = 'arsGoetiaPacts',
 	pos = { x = 0, y = 3 },
+	soul_pos = { x = 4, y = 8 },
 	cost = 5,
     blueprint_compat = false,
     perishable_compat = true,
@@ -2227,7 +2188,6 @@ SMODS.Joker {
 		if context.selling_card then
 			if context.card.ability.set == "Planet" then
 				G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-				print(context.card.edition)
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 1, func = function()
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
 					if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit
@@ -2413,7 +2373,7 @@ SMODS.Joker {
 			"in hand is below {C:attention}#2#{}"
 		}
 	},
-	config = { extra = { mult = 10, rankReq = 30 } },
+	config = { extra = { mult = 15, rankReq = 30 } },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.mult, card.ability.extra.rankReq } }
 	end,
@@ -2453,7 +2413,7 @@ SMODS.Joker {
 			"rank changes each round"
 		}
 	},
-	config = { extra = { Xmult = 2 } },
+	config = { extra = { Xmult = 3 } },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.Xmult, G.GAME.current_round.shax_rank } }
 	end,
@@ -2486,32 +2446,6 @@ SMODS.Joker {
 		end
 	end
 }
-
-local igo = Game.init_game_object
-function Game:init_game_object()
-	local ret = igo(self)
-	ret.current_round.shax_rank = 'Ace'
-	return ret
-end
-
--- This is a part 2 of the above thing, to make the custom G.GAME variable change every round.
-function SMODS.current_mod.reset_game_globals(run_start)
-	-- rank changes every round, start it at aces and go from there
-	G.GAME.current_round.shax_rank = 'Ace'
-	
-	local valid_rank_cards = {}
-	for _, v in ipairs(G.playing_cards) do
-		--check if not stone card
-		if v:get_id() > 0
-		then
-			valid_rank_cards[#valid_rank_cards + 1] = v
-		end
-	end
-	if valid_rank_cards[1] then
-		local rand_card = pseudorandom_element(valid_rank_cards, pseudoseed('shax' .. G.GAME.round_resets.ante))
-		G.GAME.current_round.shax_rank = rand_card.base.value
-	end
-end
 
 -- 45 Vine
 SMODS.Joker {
@@ -2568,14 +2502,15 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Bifrons',
 		text = {
-			"{C:mult}+#1#{} Mult if played",
-			"poker hand is your",
-			"{C:attention}most played{} poker hand"
+			"This Pact gains {C:mult}+#2#{} Mult",
+			"if played hand is {C:attention}not{} your",
+			 "{C:attention}most played{} poker hand",
+			 "{C:inactive}(Currently{} {C:mult}+#1#{} {C:inactive}Mult){}"
 		}
 	},
-	config = { extra = { mult = 10 } },
+	config = { extra = { mult = 0, multScaling = 1 } },
 	loc_vars = function(self, info_queue, card)
-		return { vars = { card.ability.extra.mult } }
+		return { vars = { card.ability.extra.mult, card.ability.extra.multScaling } }
 	end,
 	rarity = 1,
 	atlas = 'arsGoetiaPacts',
@@ -2591,16 +2526,17 @@ SMODS.Joker {
 			local currentPlayed = G.GAME.hands[context.scoring_name].played or 0
 			--for each hand type
             for k, v in pairs(G.GAME.hands) do
-				print(currentPlayed)
-				print(v.played)
-			
                 if v.played > currentPlayed and v.visible then
                     isHighest = false
 					break
                 end
             end
 		
-			if isHighest == true then
+			if isHighest == false then
+				card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.multScaling
+			end
+			
+			if card.ability.extra.mult ~= 0 then
 				return {
 					mult_mod = card.ability.extra.mult,
 					message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } }
@@ -2908,7 +2844,7 @@ SMODS.Joker {
 		name = 'Camio',
 		text = {
 			"If played hand consists",
-			"of {C:attention}1{} scoring card, retrigger",
+			"of {C:attention}1{} card, retrigger",
 			"that card {C:attention}#1#{} times"
 		}
 	},
@@ -2927,7 +2863,7 @@ SMODS.Joker {
 		if context.cardarea == G.play
 		and context.repetition
 		and not context.repetition_only then
-			if #context.scoring_hand == 1 then
+			if #context.full_hand == 1 then
 				return {
 						repetitions = card.ability.extra.repetitions,
 				}
@@ -3532,13 +3468,13 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Amdusias',
 		text = {
-			"{C:attention}Non-Wild Cards{} give",
-			"{X:mult,C:white}X1.5{} Mult for each",
-			"{C:attention}Wild Card{} scored",
+			"{C:attention}Non-Wild Cards{} give an",
+			"additional {X:mult,C:white}X0.5{} Mult for",
+			"each {C:attention}Wild Card{} scored",
 			"in the same hand"
 		}
 	},
-	config = { extra = { Xmult = 1.5 } },
+	config = { extra = { Xmult = 0.5 } },
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS.m_wild
 		return { vars = { card.ability.extra.Xmult } }
@@ -3565,9 +3501,11 @@ SMODS.Joker {
 					end
 				end
 				
-				return {
-					x_mult = card.ability.extra.Xmult ^ wildAmount
-				}
+				if wildAmount > 0 then
+					return {
+						x_mult = 1 + (card.ability.extra.Xmult * wildAmount)
+					}
+				end
 			end
 		end
 	end
@@ -3964,3 +3902,63 @@ SMODS.Consumable:take_ownership("c_judgement",{
 		return true
 	end,
 }, true)
+
+
+-- ## GENERAL FUNCTIONS & HOOKS ## --
+
+
+local igo = Game.init_game_object
+function Game:init_game_object()
+	local ret = igo(self)
+	ret.current_round.leraje_suit = { suit1 = 'Spades', suit2 = 'Hearts' }
+	ret.current_round.naberius_suit = { suit = "Spades" }
+	ret.current_round.shax_rank = 'Ace'
+	return ret
+end
+
+-- This is a part 2 of the above thing, to make the custom G.GAME variable change every round.
+function SMODS.current_mod.reset_game_globals(run_start)
+	
+	-- LERAJE --
+	
+	-- The suit changes every round, so we use reset_game_globals to choose a suit.
+	G.GAME.current_round.leraje_suit = { suit1 = 'Spades', suit2 = 'Hearts' }
+	
+	G.GAME.current_round.leraje_suit.suit1 = GetLerajeSuit(nil)
+	G.GAME.current_round.leraje_suit.suit2 = GetLerajeSuit(G.GAME.current_round.leraje_suit.suit1)
+	
+	-- SHAX --
+	
+	-- rank changes every round, start it at aces and go from there
+	G.GAME.current_round.shax_rank = 'Ace'
+	
+	local valid_rank_cards = {}
+	for _, v in ipairs(G.playing_cards) do
+		--check if not stone card
+		if v:get_id() > 0
+		then
+			valid_rank_cards[#valid_rank_cards + 1] = v
+		end
+	end
+	if valid_rank_cards[1] then
+		local rand_card = pseudorandom_element(valid_rank_cards, pseudoseed('shax' .. G.GAME.round_resets.ante))
+		G.GAME.current_round.shax_rank = rand_card.base.value
+	end
+end
+
+function GetLerajeSuit(otherSuit)
+	
+	local valid_suit_cards = {}
+	for _, v in ipairs(G.playing_cards) do
+		--check if not stone card and if not previous suit
+		if not SMODS.has_no_suit(v)
+		and v.base.suit ~= otherSuit
+		then
+			valid_suit_cards[#valid_suit_cards + 1] = v
+		end
+	end
+	if valid_suit_cards[1] then
+		local rand_card = pseudorandom_element(valid_suit_cards, pseudoseed('leraje' .. G.GAME.round_resets.ante))
+		return rand_card.base.suit
+	end
+end
