@@ -401,7 +401,7 @@ SMODS.Joker {
 	loc_txt = {
 		name = 'Aamon',
 		text = {
-			"{C:mult}+5{} Mult for",
+			"{C:mult}+#1#{} Mult for",
 			"each {C:attention}suit{} of cards",
 			"scored in played hand"
 		}
@@ -651,7 +651,7 @@ SMODS.Joker {
 			"{C:inactive}(Currently{} {C:chips}+#1#{} {C:inactive}Chips){}"
 		}
 	},
-	config = { extra = { chips = 0, chipsScaling = 4, preRerollCost = 0 } },
+	config = { extra = { chips = 0, chipsScaling = 5, preRerollCost = 0 } },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.chips, card.ability.extra.chipsScaling } }
 	end,
@@ -1145,7 +1145,7 @@ SMODS.Joker {
 			"{C:inactive}(Currently{} {X:mult,C:white}X#1#{} {C:inactive}Mult){}"
 		}
 	},
-	config = { extra = { Xmult = 1, XmultScaling = 0.1 } },
+	config = { extra = { Xmult = 1, XmultScaling = 0.2 } },
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS['m_arsGoetia_alchemy']
 		return { vars = { card.ability.extra.Xmult, card.ability.extra.XmultScaling } }
@@ -1198,7 +1198,7 @@ SMODS.Joker {
 			"when {C:attention}Blind{} is selected"
 		}
 	},
-	config = { extra = { xmult = 6, HandsDiscards = 1 } },
+	config = { extra = { xmult = 7, HandsDiscards = 1 } },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.xmult, card.ability.extra.HandsDiscards } }
 	end,
@@ -1416,7 +1416,7 @@ SMODS.Joker {
 			"{C:inactive}(Currently{} {C:chips}+#1#{} {C:inactive}Chips){}"
 		}
 	},
-	config = { extra = { chips = 0, chipsScaling = 4 } },
+	config = { extra = { chips = 0, chipsScaling = 5 } },
 	loc_vars = function(self, info_queue, card)
 		return {
 			vars = {
