@@ -1,0 +1,13 @@
+{
+
+	"id": "ArsGoetia",
+	"name": "Ars Goetia",
+	"author": [ "Khasm" ],
+	"badge_colour": "BB5ADD",
+	"description": "A vanilla-balanced mod that adds 72* new Jokers, 9 new decks, and a new Enhancement + Tarot. Care to deal with the devil?",
+	"prefix": "arsGoetia",
+	"display_name": "Ars Goetia",
+	"main_file": "arsGoetia.lua",
+	"version": "6.6.6"
+
+}

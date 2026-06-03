@@ -1,3 +1,0 @@
-return {
-	pactPacks = false,
-}
