@@ -1700,7 +1700,15 @@ SMODS.Joker {
 			card.ability.extra.skipped = card.ability.extra.skipped + 1
 			
 			if card.ability.extra.skipped == 2 then
-				--create the joker
+				--create the jokah baybey
+				local newJoker = create_card('Joker', G.jokers, nil, 2, nil, nil, nil, 'astaroth')
+				newJoker:add_to_deck()
+				
+				newJoker:set_edition({negative = true}, true)
+				newJoker:set_illusion()
+				
+				G.jokers:emplace(newJoker)
+				newJoker:start_materialize()
 				
 				card.ability.extra.skipped = 0
 				return {
