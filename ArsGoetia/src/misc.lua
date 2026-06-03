@@ -318,7 +318,6 @@ SMODS.Back({
 				local kills = 0
 				for i = 1, #G.jokers.cards do
 					if G.jokers.cards[i] ~= nil then
-						print(G.jokers.cards[i].ability.eternal)
 						--skip card if it's eternal
 						if not G.jokers.cards[i].ability.eternal == true then
 							SMODS.destroy_cards(G.jokers.cards[i])
