@@ -3382,7 +3382,7 @@ SMODS.Joker {
 		if context.destroying_card
 		and not context.blueprint then
 			if G.GAME.current_round.hands_played == 0
-			and #G.hand.cards > 0 then
+			and #G.hand.cards > 0
 			then
 				SMODS.destroy_cards(G.hand.cards[#G.hand.cards])
             end
