@@ -2093,7 +2093,9 @@ SMODS.Joker {
 			local killCards = {}
 			
 			for i = 1, #context.scoring_hand do
-				if context.scoring_hand[i].ability.name == G.P_CENTERS.m_glass.name then
+				if context.scoring_hand[i].ability.name == G.P_CENTERS.m_glass.name
+				and not context.scoring_hand[i].getting_sliced
+				then
 					--scoring_hand[i]card:shatter()
 					killCards[#killCards + 1] = context.scoring_hand[i]
 				end
@@ -2327,7 +2329,9 @@ SMODS.Joker {
 		if context.end_of_round and context.cardarea == G.jokers then
 			card.ability.extra.roundsCur = card.ability.extra.roundsCur - 1
 			
-			if card.ability.extra.roundsCur == 0 then
+			if card.ability.extra.roundsCur == 0
+			and not card.getting_sliced
+			then
 				SMODS.destroy_cards(card)
 			end
 		end
@@ -2604,7 +2608,9 @@ SMODS.Joker {
 		if context.end_of_round and context.cardarea == G.jokers then
 			card.ability.extra.roundsCur = card.ability.extra.roundsCur - 1
 			
-			if card.ability.extra.roundsCur == 0 then
+			if card.ability.extra.roundsCur == 0
+			and not card.getting_sliced
+			then
 				SMODS.destroy_cards(card)
 			end
 		end
@@ -2842,7 +2848,9 @@ SMODS.Joker {
 		if context.end_of_round and context.cardarea == G.jokers then
 			card.ability.extra.roundsCur = card.ability.extra.roundsCur - 1
 			
-			if card.ability.extra.roundsCur == 0 then
+			if card.ability.extra.roundsCur == 0
+			and not card.getting_sliced
+			then
 				SMODS.destroy_cards(card)
 			end
 		end
@@ -3194,7 +3202,9 @@ SMODS.Joker {
 		if context.end_of_round and context.cardarea == G.jokers then
 			card.ability.extra.roundsCur = card.ability.extra.roundsCur - 1
 			
-			if card.ability.extra.roundsCur == 0 then
+			if card.ability.extra.roundsCur == 0
+			and not card.getting_sliced
+			then
 				SMODS.destroy_cards(card)
 			end
 		end
@@ -3301,7 +3311,9 @@ SMODS.Joker {
 			--wait
 			delay(0.5)
 			
-			SMODS.destroy_cards(card)
+			if card ~= nil then
+				SMODS.destroy_cards(card)
+			end
 		end
 	end
 }
@@ -3369,7 +3381,9 @@ SMODS.Joker {
 	calculate = function(self, card, context)
 		if context.destroying_card
 		and not context.blueprint then
-			if G.GAME.current_round.hands_played == 0 then
+			if G.GAME.current_round.hands_played == 0
+			and #G.hand.cards > 0 then
+			then
 				SMODS.destroy_cards(G.hand.cards[#G.hand.cards])
             end
 		end
