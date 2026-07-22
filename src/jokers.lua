@@ -651,7 +651,7 @@ SMODS.Joker {
 			"{C:inactive}(Currently{} {C:chips}+#1#{} {C:inactive}Chips){}"
 		}
 	},
-	config = { extra = { chips = 0, chipsScaling = 5, preRerollCost = 0 } },
+	config = { extra = { chips = 0, chipsScaling = 4, preRerollCost = 0 } },
 	loc_vars = function(self, info_queue, card)
 		return { vars = { card.ability.extra.chips, card.ability.extra.chipsScaling } }
 	end,
@@ -1416,7 +1416,7 @@ SMODS.Joker {
 			"{C:inactive}(Currently{} {C:chips}+#1#{} {C:inactive}Chips){}"
 		}
 	},
-	config = { extra = { chips = 0, chipsScaling = 5 } },
+	config = { extra = { chips = 0, chipsScaling = 4 } },
 	loc_vars = function(self, info_queue, card)
 		return {
 			vars = {
