@@ -1817,6 +1817,10 @@ SMODS.Joker {
 	},
 	config = { extra = { tarotsAmount = 2 } },
 	loc_vars = function(self, info_queue, card)
+		--add Negative popup
+		info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+		--add perish tag popup
+		info_queue[#info_queue + 1] = { set = "Other", key = 'arsGoetia_illusion' }
 		return { vars = { card.ability.extra.tarotsAmount } }
 	end,
 	rarity = 3,
@@ -1944,7 +1948,7 @@ SMODS.Joker {
 					return true
 					end
 				}))
-				card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_chips', vars = {card.ability.extra.chips + addChips}}})
+				card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_chips', vars = {addChips}}})
 				return true
 				end
             }))

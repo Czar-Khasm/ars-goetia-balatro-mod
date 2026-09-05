@@ -149,8 +149,10 @@ SMODS.Sticker({
 	sets = { arsGoetia_illusionJokers = true },
 	
     calculate = function(self, card, context)
-		--destroy card if card is part of played hand
-		if context.destroying_card then
+		--destroy card if card is part of played or discarded hand
+		if context.destroying_card
+		or context.discard
+		then
 			local isInPlayedHandFlag = false
 			
 			--not sure if there's just a function for this, but whatever
@@ -161,13 +163,17 @@ SMODS.Sticker({
 				end
 			end
 		
-			if isInPlayedHandFlag then
+			if isInPlayedHandFlag
+			and not card.getting_sliced
+			then
 				SMODS.destroy_cards(card)
 				
-				delay(0.5)
+				if context.destroying_card then
+					delay(0.5)
+				end
 			end
 		end
-	
+		
         --destroy card at end of round
         if context.end_of_round then
 			SMODS.destroy_cards(card)
