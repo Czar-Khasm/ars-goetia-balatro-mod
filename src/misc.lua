@@ -293,7 +293,7 @@ SMODS.Back({
             "{C:attention}+#1#{} Joker slot,",
 			"Destroy the {C:attention}leftmost{}",
 			"{V:1}non-Eternal{} Joker after",
-			"clearing a {C:attention}Boss Blind{}",
+			"defeating a {C:attention}Boss Blind{}",
 			"starting in {C:attention}Ante 3{}"
         }
     },
@@ -349,7 +349,7 @@ SMODS.Back({
         name = 'Heresy Deck',
         text = {
             "Create a {C:dark_edition,T:e_negative}Negative{} {C:dark_edition,T:arsGoetia_illusion}Illusion{}",
-			"{C:tarot,T:c_devil}The Devil{} and lose {C:money}$Ante{},",
+			"{C:tarot,T:c_devil}The Devil{} and lose {C:money}$Ante{}",
 			"when selecting blind"
         }
     },
@@ -443,11 +443,16 @@ SMODS.Back({
         name = 'Treachery Deck',
         text = {
             "{C:red}#1#{} Joker slot,",
-			"{C:attention}+#2#{} Joker slots during blinds",
-			"Start run with {C:tarot,T:c_judgement}Judgement{}"
+			"{C:attention}+#2#{} Joker slots during blinds,",
+			--"Start run with {C:tarot,T:c_judgement}Judgement{}",
+			"Gain a {C:dark_edition,T:e_negative}Negative{} {C:tarot,T:c_judgement}Judgement{}",
+			"when defeating a {C:attention}Boss Blind{}"
         }
     },
-	config = { joker_slot = -1, consumables = { 'c_judgement' }, extra = { roundJokers = 3, alreadyTriggered = false} },
+	config = { joker_slot = -1,
+	           --consumables = { 'c_judgement' },
+			   extra = { roundJokers = 3,
+			   alreadyTriggered = false} },
 	loc_vars = function(self)
         return { vars = { self.config.joker_slot, self.config.extra.roundJokers }}
     end,
@@ -467,6 +472,21 @@ SMODS.Back({
 		then
 			alreadyTriggered = true
 			G.jokers.config.card_limit = G.jokers.config.card_limit - self.config.extra.roundJokers
+			
+			if G.GAME.blind.boss then
+				G.E_MANAGER:add_event(Event({
+				trigger = 'before',
+				delay = 0.0,
+				func = (function()
+					local newTarot = create_card('Tarot', G.consumeables, nil, nil, nil, nil, 'c_judgement', 'treachery_deck')
+					newTarot:add_to_deck()
+					
+					newTarot:set_edition({negative = true}, true)
+					
+					G.consumeables:emplace(newTarot)
+					return true
+				end)}))
+			end
 		end
 	end
 })
